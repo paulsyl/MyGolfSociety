@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Welcome to the SHAGS homepage </h1>
+
+<form method="POST" action="{% url 'accounts:login' %}">  <!--  useraccounts refers to the app_name -->
+    {% csrf_token %}   <!-- not quite sure what this does yet -->
+    Username:
+    </br>
+    <input type="text" name="username" />
+    </br>
+    </br>
+    Password:
+    </br>
+    <input type="password" name="password" />
+    </br>
+    </br>
+    </br>
+    <input class="btn btn-primary" type="submit" value="Log me in"/>
+</form>
+
+<!-- Error messages from the view -->
+</br>
+{% if error %}
+{{ error }}
+</br>
+{% endif %}
+
+{% endblock %}

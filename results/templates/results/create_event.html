@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Create Event </h1>
+
+<form method="POST" action="{% url 'results:create_event' %}">
+    {% csrf_token %}
+    Venue:
+    </br>
+    <input type="text" name="venue" />
+    </br>
+    </br>
+    Event Date:
+    </br>
+    <input type="date" name="event_date" />
+    </br>
+    </br>
+    <input class="btn btn-primary" type="submit" value="Post"/>
+</form>
+<!-- Error messages from the view -->
+{% if success %}
+</br>
+</br>
+<h4> {{ success }} </h4>
+{% endif %}
+
+{% if error %}
+</br>
+</br>
+<h4> {{ error }} </h4>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Society Homepage </h1>
+<br/>
+
+<a href="{% url 'results:create_event'  %}"> Create Event </a>
+</br>
+</br>
+
+{%  for event in events.all %}
+
+<table>
+    <tr>
+        <td style="padding-right: 20px;"> {{ event.venue }} </td>
+        <td style="padding-right: 20px;"> {{ event.date_of_event }}  </td>
+    </tr>
+</table>
+
+
+{% endfor %}
+
+{% endblock %}

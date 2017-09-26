@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<h1> Sign up </h1>
+
+<!-- Error messages from the view -->
+{% if error %}
+{{ error }}
+</br>
+</br>
+{% endif %}
+
+<form method="POST" action="{% url 'accounts:signup' %}">  <!--  useraccounts refers to the app_name -->
+    {% csrf_token %}   <!-- not quite sure what this does yet -->
+    Username:
+    </br>
+    <input type="text" name="username" />
+    </br>
+    </br>
+    Password:
+    </br>
+    <input type="password" name="password1" />
+    </br>
+    </br>
+    Confirm Password:
+    </br>
+    <input type="password" name="password2" />
+    </br>
+    </br>
+    First Name:
+    </br>
+    <input type="text" name="firstname" />
+    </br>
+    </br>
+    Surname:
+    </br>
+    <input type="text" name="surname" />
+    </br>
+    </br>
+    Email Address:
+    </br>
+    <input type="text" name="email" />
+    </br>
+    </br>
+    Date of Birth:
+    </br>
+    <input type="date" name="date_of_birth" />
+    </br>
+    </br>
+    <input class="btn btn-primary" type="submit" value="Sign up!"/>
+</form>
+
+{% endblock %}
