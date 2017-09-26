@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Result: {{ event.venue }}  </h1>
+<h2>  {{ event.date_of_event }} </h2>
+<br/>
+
+</br>
+</br>
+
+{%  for result in result.all %}
+
+<table>
+    <tr>
+        <td style="padding-right: 20px;"> {{ result.total_score }} </td>
+        <td style="padding-right: 20px;"> {{ result.event_rank }}  </td>
+    </tr>
+</table>
+
+
+{% endfor %}
+
+{% endblock %}

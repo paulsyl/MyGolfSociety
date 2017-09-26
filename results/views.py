@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db import IntegrityError
 from django.contrib.auth.models import User
-from . models import Event
+from . models import Event, Results
 
 def dashboard(request):
     events = Event.objects.order_by('-date_of_event')
@@ -32,3 +32,16 @@ def create_event(request):
             return render(request, 'results/create_event.html', {'error': 'ERROR: You must include a Venue and Date to create an Event'})
     else:
         return render(request, 'results/create_event.html')
+
+def get_event(request,fk):
+    result = Results.objects.filter(event_id=fk)
+    event = Event.objects.get(pk=fk)
+    return render(request, 'results/getevent.html', {'result': result, 'event': event})
+
+
+
+
+
+        #posts = Post.objects.order_by('-votes_total').filter(author__id=fk)
+#    author = User.objects.get(pk=fk)
+    #return render(request, 'posts/byuser.html', {'posts': posts, 'author': author})
