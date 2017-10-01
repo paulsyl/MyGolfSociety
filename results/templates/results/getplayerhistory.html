@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Player History: </br> </h1>
+<br/>
+
+</br>
+</br>
+
+<div class="container">
+    <table id="Player History table" class="table order-list">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Date of Event</th>
+                <th>Total Score</th>
+                <th>Event Rank</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for history in history.all %}
+            <tr>
+                <td > {{ history.event.venue}} </td>
+                <td > {{ history.event.date_of_event}}  </td>
+                <td > {{ history.total_score}}  </td>
+                <td > {{ history.event_rank}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
