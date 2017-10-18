@@ -1,7 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from .forms import EventForm, PlayerForm
+from crispy_forms.helper import FormHelper
 from django.db import IntegrityError
+from django.db.models import Avg, Max
 from django.contrib.auth.models import User
 from . models import Event, Result, Player
 
@@ -16,92 +19,100 @@ def dashboard(request):
     return render(request, 'results/dashboard.html', context)
 
 @login_required
+def events(request):
+    events = Event.objects.order_by('-date_of_event')
+    context = {
+        "events" : events
+    }
+    return render(request, 'results/events.html', context)
+
+@login_required
+def members(request):
+    members = Player.objects.order_by('last_name')
+    context = {
+        "members" : members
+    }
+    return render(request, 'results/members.html', context)
+
+@login_required
 def create_event(request):
-    # Create the event if a POST request is issued
+
     if request.method == 'POST':
-        if request.POST['venue'] and request.POST['event_date']:
-            venue = request.POST['venue']
-            date_of_event = request.POST['event_date']
-            # Check for existence of event prior to making the Model.Save
-            event = Event.objects.filter(venue=venue,date_of_event=date_of_event)
-            context = {
-                "error": 'ERROR: This event on this date has already been created!'
-            }
+        form = EventForm(request.POST)
 
-            if event:
-                return render(request, 'results/create_event.html', context)
-            else:
-                Event.objects.create(venue=venue,
-                                     date_of_event=date_of_event,
-                                     event_type='S')
-            context = {
-                "success": 'Event Created!'
-            }
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.venue = form.cleaned_data['venue']
+            event.date_of_event = form.cleaned_data['date_of_event']
+            event.save
 
-            return render(request, 'results/create_event.html', context)
-        else:
-            # Error in the event that the venue and event_Date have not been supplied.
-            context = {
-                "error": 'ERROR: You must include a Venue and Date to create an Event'
-            }
-            return render(request, 'results/create_event.html', context)
+            Event.objects.create(venue=event.venue,
+                                 date_of_event=event.date_of_event)
+
+            return redirect('results:events')
     else:
-        return render(request, 'results/create_event.html')
+        form = EventForm()
+
+    return render(request, 'results/create_event.html', {"form": form})
 
 @login_required
 def create_player(request):
-    # Create the event if a POST request is issued
+
     if request.method == 'POST':
-        if request.POST['first_name'] and request.POST['last_name']:
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            age = request.POST['age']
-            date_joined = request.POST['date_joined']
-            starting_handicap = request.POST['starting_handicap']
-            # Check for existence of player prior to making the Model.Save
-            player = Player.objects.filter(first_name=first_name, last_name=last_name)
-            context = {
-                "error": 'ERROR: This player has already been created!'
-            }
+        form = PlayerForm(request.POST)
 
-            if player:
-                return render(request, 'results/create_player.html', context)
+        if form.is_valid():
+            player = form.save(commit=False)
+            player.first_name = form.cleaned_data['first_name']
+            player.last_name = form.cleaned_data['last_name']
+            player.date_joined = form.cleaned_data['date_joined']
+            player.starting_handicap = form.cleaned_data['starting_handicap']
+            player.save
+
+            # Check to see if the player already exists
+            player_check = Player.objects.filter(first_name=player.first_name, last_name=player.last_name)
+
+            if player_check:
+                render(request, 'results/create_player.html', {
+                                                            "form": form,
+                                                            "error": "ERROR: This player has already been created!"
+                                                            })
+                #  Need to figure out why error message is not returning
             else:
-                Player.objects.create(first_name=first_name,
-                                      last_name=last_name,
-                                      age=age,
-                                      date_joined=date_joined,
-                                      starting_handicap=starting_handicap
-                                      )
-            context = {
-                "success": 'Player Created!'
-            }
+                Player.objects.create(first_name=player.first_name,
+                                      last_name=player.last_name,
+                                      date_joined=player.date_joined,
+                                      starting_handicap=player.starting_handicap)
 
-            return render(request, 'results/create_player.html', context)
-        else:
-            # Error in the event that the venue and event_Date have not been supplied.
-            context = {
-                "error": 'ERROR: You must include a First Name and Last Name to create a Player'
-            }
-            return render(request, 'results/create_player.html', context)
+                return redirect('results:members')
     else:
-        return render(request, 'results/create_player.html')
+        form = PlayerForm()
+
+    return render(request, 'results/create_player.html', {"form": form})
 
 @login_required
 def get_event(request,fk):
+    event = get_object_or_404(Event,pk=fk)
     result = Result.objects.filter(event_id=fk).order_by('event_rank')
-    event = Event.objects.get(pk=fk)
+    events = Event.objects.order_by('-date_of_event')
     context = {
             "result": result,
-            "event": event
+            "event": event,
+            "events" : events
              }
 
     return render(request, 'results/getevent.html', context)
 
 @login_required
 def get_player_history(request,pk):
+    player = get_object_or_404(Player,id=pk)
+    avg_score = Result.objects.filter(player_id=pk).aggregate(Avg('total_score'))
+    rds_played = Result.objects.filter(player_id=pk).count()
     history = Result.objects.filter(player_id=pk).order_by('-event__date_of_event')
     context = {
-        "history": history
+        "history": history,
+        "avg_score" : avg_score,
+        "rds_played" : rds_played,
+        "player" : player,
     }
     return render(request, 'results/getplayerhistory.html', context)

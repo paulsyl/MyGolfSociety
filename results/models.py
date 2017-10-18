@@ -5,17 +5,7 @@ from django.contrib.auth.models import User
 class Event(models.Model):
     venue = models.CharField(max_length=200)
     date_of_event = models.DateField()
-    TOUR = 'Tour'
-    SOCIETY = 'Society'
-    EVENT_TYPE_CHOICES = (
-        (TOUR, 'Tour'),
-        (SOCIETY, 'Society'),
-    )
-    event_type = models.CharField(
-        max_length=100,
-        choices=EVENT_TYPE_CHOICES,
-        default=SOCIETY
-    )
+    event_type = models.CharField(max_length=100)
 
     # Function to return a title for the model
     def __str__(self):

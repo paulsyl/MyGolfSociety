@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Members </h1>
+<br/>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+
+            <table class="table order-list">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for member in members.all %}
+                <tr>
+                    <td > {{ member.first_name }} </td>
+                    <td > {{ member.last_name }}  </td>
+                    <td> <a href="{% url 'results:get_player_history' member.id %}" ><span class="glyphicon glyphicon-stats" ></span> </a> </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

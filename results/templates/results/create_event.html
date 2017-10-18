@@ -1,22 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1> Create Event </h1>
+{% load crispy_forms_tags %}
 
-<form method="POST" action="{% url 'results:create_event' %}">
-    {% csrf_token %}
-    Venue:
-    </br>
-    <input type="text" name="venue" />
-    </br>
-    </br>
-    Event Date:
-    </br>
-    <input type="date" name="event_date" />
-    </br>
-    </br>
-    <input class="btn btn-primary" type="submit" value="Post"/>
-</form>
+<h1>Create Event</h1>
+<br/>
+
+<div class="container">
+   {% csrf_token %}
+   {% crispy form %}
+</div>
+
+
 <!-- Error messages from the view -->
 {% if success %}
 </br>

@@ -17,6 +17,7 @@
                 <th>Rank</th>
                 <th>First Name</th>
                 <th>Last Name</th>
+                <th>Handicap</th>
                 <th>Total Score</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                 <td> {{forloop.counter }} </td>
                 <td > {{ result.player.first_name }}  </td>
                 <td > {{ result.player.last_name }}  </td>
+                <td > {{ result.handicap }}  </td>
                 <td > {{ result.total_score }} </td>
             </tr>
             {% endfor %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> Event History </h1>
+<br/>
+
+<div class="container">
+
+        <div class="col-xs-6">
+
+            <table class="table order-list">
+                <thead>
+                    <tr>
+                        <th>Venue</th>
+                        <th>Date</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {%  for event in events.all %}
+                <tr>
+                    <td > {{ event.venue }} </td>
+                    <td > {{ event.date_of_event }}  </td>
+                    <td> <a href="{% url 'results:get_event' event.id %}" ><span class="glyphicon glyphicon-stats" ></span> </a> </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+    </div>
+</div>
+
+
+{% endblock %}

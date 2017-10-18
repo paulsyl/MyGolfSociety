@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1> Player History: </br> </h1>
+<h1> Player History: {{ player.first_name}}</br> </h1>
 <br/>
 
 </br>
 </br>
+
+<h4> Total Rounds Played {{ rds_played }} </h4>
+<h4> Average Points Total {{ avg_score.total_score__avg|floatformat }} </h4>
+</br>
+
 
 <div class="container">
     <table id="Player History table" class="table order-list">
@@ -13,6 +18,7 @@
             <tr>
                 <th>Event</th>
                 <th>Date of Event</th>
+                <th>Event Handicap</th>
                 <th>Total Score</th>
                 <th>Event Rank</th>
             </tr>
@@ -23,6 +29,7 @@
             <tr>
                 <td > {{ history.event.venue}} </td>
                 <td > {{ history.event.date_of_event}}  </td>
+                <td > {{ history.handicap|floatformat}} </td>
                 <td > {{ history.total_score}}  </td>
                 <td > {{ history.event_rank}} </td>
             </tr>

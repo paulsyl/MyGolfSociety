@@ -1,37 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1> Create Player </h1>
 
-<form method="POST" action="{% url 'results:create_player' %}">
-    {% csrf_token %}
-    First Name:
-    </br>
-    <input type="text" name="first_name" />
-    </br>
-    </br>
-    Last Name:
-    </br>
-    <input type="text" name="last_name" />
-    </br>
-    </br>
-    Age:
-    </br>
-    <input type="number" name="age" />
-    </br>
-    </br>
-    Starting Handicap:
-    </br>
-    <input type="number" name="starting_handicap" />
-    </br>
-    </br>
-    Date Joined:
-    </br>
-    <input type="date" name="date_joined" />
-    </br>
-    </br>
-    <input class="btn btn-primary" type="submit" value="Post"/>
-</form>
+<h1> Create Player </h1>
+<br/>
+
+{% if error %}
+</br>
+</br>
+<h4> {{ error }} </h4>
+{% endif %}
+
+{% load crispy_forms_tags %}
+<div class="container">
+   {% csrf_token %}
+   {% crispy form %}
+</div>
+
 <!-- Error messages from the view -->
 {% if success %}
 </br>
