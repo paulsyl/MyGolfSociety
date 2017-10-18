@@ -7,6 +7,13 @@ from django.db import IntegrityError
 from django.db.models import Avg, Max
 from django.contrib.auth.models import User
 from . models import Event, Result, Player
+from datetime import date
+
+def todays_date():
+    todays_date = date.today()
+    today = todays_date.strftime("%Y-%m-%d")
+
+    return today
 
 @login_required
 def dashboard(request):
@@ -65,7 +72,7 @@ def create_player(request):
             player = form.save(commit=False)
             player.first_name = form.cleaned_data['first_name']
             player.last_name = form.cleaned_data['last_name']
-            player.date_joined = form.cleaned_data['date_joined']
+            player.date_joined = todays_date()
             player.starting_handicap = form.cleaned_data['starting_handicap']
             player.save
 
