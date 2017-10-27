@@ -1,18 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .forms import EventForm, PlayerForm
-from crispy_forms.helper import FormHelper
 from django.db import IntegrityError
 from django.db.models import Avg, Max
 from django.contrib.auth.models import User
-from . models import Event, Result, Player
 from datetime import date
+from crispy_forms.helper import FormHelper
+from .models import Event, Result, Player
+from .forms import EventForm, PlayerForm
+
 
 def todays_date():
     todays_date = date.today()
     today = todays_date.strftime("%Y-%m-%d")
-
     return today
 
 @login_required
