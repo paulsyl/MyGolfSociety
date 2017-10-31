@@ -8,6 +8,7 @@ from datetime import date
 from crispy_forms.helper import FormHelper
 from .models import Event, Result, Player
 from .forms import EventForm, PlayerForm
+from string import ascii_uppercase
 
 
 def todays_date():
@@ -35,10 +36,19 @@ def events(request):
 
 @login_required
 def members(request):
-    members = Player.objects.order_by('last_name')
+    members = []
+    # loop through the alphabet and create a dicitionairy of each member per letter
+    # istartwith is case insensite search
+    for alpha in ascii_uppercase:
+        member_list = Player.objects.filter(last_name__istartswith=alpha)
+        output = ( alpha, ( member_list ))
+        members.append(output)
+
+#    members = Player.objects.order_by('last_name')
     context = {
         "members" : members
     }
+
     return render(request, 'results/members.html', context)
 
 @login_required
