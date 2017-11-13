@@ -3,19 +3,24 @@
 
 <h1> Members </h1>
 <br/>
+<div class="container">
+<div class="list-group">
+    {% for alpha, member_list in members %}
+     <h3> {{ alpha }} </h3>
 
 
+    <div>
+        {% for a in member_list %}
+        <li> <a href="{% url 'results:get_player_history' a.id %}" >  {{ a.first_name}} {{ a.last_name}} <span class="glyphicon glyphicon-stats" ></span></a> </li>
+        {% empty %}
+        <li>No Members </li>
+        {% endfor %}
+    </div>
 
-{% for alpha, member_list in members %}
-    <p> {{ alpha }} </p>
-    {% for member in member_list %}
-        <p> {{ member }}
-        <a href="{% url 'results:get_player_history' member.id %}" ><span class="glyphicon glyphicon-stats" ></span> </a>
-        </p>
     {% endfor %}
-{% endfor %}
 
+</div>
 
-
+</div>
 
 {% endblock %}

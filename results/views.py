@@ -38,13 +38,12 @@ def events(request):
 def members(request):
     members = []
     # loop through the alphabet and create a dicitionairy of each member per letter
-    # istartwith is case insensite search
+    # istartwith is case insensitive search
     for alpha in ascii_uppercase:
         member_list = Player.objects.filter(last_name__istartswith=alpha)
         output = ( alpha, ( member_list ))
         members.append(output)
 
-#    members = Player.objects.order_by('last_name')
     context = {
         "members" : members
     }
