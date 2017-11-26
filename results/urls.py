@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^createplayer/', views.create_player, name='create_player'),
     url(r'^getevent/(?P<fk>[0-9]+)', views.get_event, name='get_event'),
     url(r'^getplayerhistory/(?P<pk>[0-9]+)', views.get_player_history, name='get_player_history'),
+    url(r'^chart',views.chart,name='chart')
 ]

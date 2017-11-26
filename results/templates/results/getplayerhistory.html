@@ -4,13 +4,41 @@
 <h1> Player History: {{ player.first_name}} {{ player.last_name}}</br> </h1>
 <br/>
 
-</br>
-</br>
-
 <h4> Total Rounds Played {{ rds_played }} </h4>
 <h4> Average Points Total {{ avg_score.total_score__avg|floatformat }} </h4>
 </br>
 
+{% load googlecharts %}
+<div class="container-fluid">
+    <div class="row">
+        <div id="handicap_tracker" ></div>
+        {% googlecharts %}
+        	{# named data and options can be reused #}
+        	{% data chart "handicap_tracker_data" %}
+        		{% col "string" "Date" %}"{{ val }}"{% endcol %}
+        		{% col "number" "Handicap" %}{{ val }}{% endcol %}
+        	{% enddata %}
+        	{# you can also use global javascript variables here, #}
+        	{# and call functions #}
+        	{% options "handicap_tracker_options" %}
+        		kind: "LineChart",
+        		options: {
+                    height: 400,
+        			title: "Handicap Tracker",
+        			legend: "none",
+        			vAxis: { title: "Playing Handicap" ,
+                             minValue: 0},
+        			hAxis: { viewWindowMode: "pretty"},
+        		},
+        	{% endoptions %}
+        	{# chart is assembled from container, data and options #}
+        	{% graph "handicap_tracker" "handicap_tracker_data" "handicap_tracker_options" %}
+        {% endgooglecharts %}
+    </div>
+</div>
+
+<br>
+<br>
 
 <div class="container">
     <table id="Player History table" class="table order-list">

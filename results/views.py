@@ -125,10 +125,33 @@ def get_player_history(request,pk):
     avg_score = Result.objects.filter(player_id=pk).aggregate(Avg('total_score'))
     rds_played = Result.objects.filter(player_id=pk).count()
     history = Result.objects.filter(player_id=pk).order_by('-event__date_of_event')
+    handicap_history = Result.objects.filter(player_id=pk).order_by('event__date_of_event')
+
+    #Data values for the Handicap chart
+    data_values = []
+    for a in handicap_history:
+        key_val = (a.event.date_of_event, a.handicap)
+        data_values.append(key_val)
+
     context = {
         "history": history,
         "avg_score" : avg_score,
         "rds_played" : rds_played,
         "player" : player,
+        "chart" : data_values,
     }
     return render(request, 'results/getplayerhistory.html', context)
+
+def chart(request):
+    pk = 16
+    player = get_object_or_404(Player,id=pk)
+    handicap_history = Result.objects.filter(player_id=pk).order_by('event__date_of_event')
+
+    data_values = []
+
+    for a in handicap_history:
+        key_val = (a.event.date_of_event, a.handicap)
+        data_values.append(key_val)
+
+    context = {'values': data_values}
+    return render(request, 'results/chart.html', context)

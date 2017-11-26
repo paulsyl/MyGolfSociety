@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'useraccounts',
     'results',
     'crispy_forms',
+    'googlecharts',
 ]
 
 MIDDLEWARE = [
