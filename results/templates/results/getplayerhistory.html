@@ -8,33 +8,79 @@
 <h4> Average Points Total {{ avg_score.total_score__avg|floatformat }} </h4>
 </br>
 
-{% load googlecharts %}
-<div class="container-fluid">
-    <div class="row">
-        <div id="handicap_tracker" ></div>
-        {% googlecharts %}
-        	{# named data and options can be reused #}
-        	{% data chart "handicap_tracker_data" %}
-        		{% col "string" "Date" %}"{{ val }}"{% endcol %}
-        		{% col "number" "Handicap" %}{{ val }}{% endcol %}
-        	{% enddata %}
-        	{# you can also use global javascript variables here, #}
-        	{# and call functions #}
-        	{% options "handicap_tracker_options" %}
-        		kind: "LineChart",
-        		options: {
-                    height: 400,
-        			title: "Handicap Tracker",
-        			legend: "none",
-        			vAxis: { title: "Playing Handicap" ,
-                             minValue: 0},
-        			hAxis: { viewWindowMode: "pretty"},
-        		},
-        	{% endoptions %}
-        	{# chart is assembled from container, data and options #}
-        	{% graph "handicap_tracker" "handicap_tracker_data" "handicap_tracker_options" %}
-        {% endgooglecharts %}
-    </div>
+<script>
+{% block jquery %}
+// Use Jquery to call the API Endpoint
+var endpoint = '/results/api/chart/data/{{ id }}'
+// Assign the API data
+var defaultData =[]
+var labels = []
+
+$.ajax({
+	method: "GET",
+	url: endpoint,
+	success: function(data){
+		// data is the response from the view
+		labels = data.labels
+		defaultData = data.default
+		setChart()
+		//console.log(data)
+	},
+	error: function(error_data){
+		console.log("error")
+		console.log(error_data)
+	}
+})
+
+function setChart() {
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: [{
+				label: 'Handicap',
+				data: defaultData,
+	            backgroundColor: [
+	                'rgba(255, 99, 132, 0.2)',
+	                'rgba(54, 162, 235, 0.2)',
+	                'rgba(255, 206, 86, 0.2)',
+	                'rgba(75, 192, 192, 0.2)',
+	                'rgba(153, 102, 255, 0.2)',
+	                'rgba(255, 159, 64, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(255,99,132,1)',
+	                'rgba(54, 162, 235, 1)',
+	                'rgba(255, 206, 86, 1)',
+	                'rgba(75, 192, 192, 1)',
+	                'rgba(153, 102, 255, 1)',
+	                'rgba(255, 159, 64, 1)'
+	            ],
+	            borderWidth: 1
+	        }]
+	    },
+	    options: {
+            legend: { display: false },
+            title: { display: true,
+                     text: 'Handicap Tracker'},
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero:true
+	                }
+	            }]
+	        }
+	    }
+	});
+}
+
+{% endblock jquery %}
+</script>
+
+<div class='col-sm-12'>
+<canvas id="myChart" width="700" height="200"></canvas>
+<br>
 </div>
 
 <br>

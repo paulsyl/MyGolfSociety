@@ -9,6 +9,11 @@ from crispy_forms.helper import FormHelper
 from .models import Event, Result, Player
 from .forms import EventForm, PlayerForm
 from string import ascii_uppercase
+#Added for use with ChartsJs
+from django.http import JsonResponse
+from django.views.generic import View
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 def todays_date():
@@ -139,19 +144,39 @@ def get_player_history(request,pk):
         "rds_played" : rds_played,
         "player" : player,
         "chart" : data_values,
+        "id" : pk,
     }
     return render(request, 'results/getplayerhistory.html', context)
 
-def chart(request):
-    pk = 16
-    player = get_object_or_404(Player,id=pk)
-    handicap_history = Result.objects.filter(player_id=pk).order_by('event__date_of_event')
+def chart(request,pk):
+    # Take the PK, output to the Charting Template and use as the API Endpoint
+    context = {
+        "id" : pk,
+    }
 
-    data_values = []
+    return render(request, 'results/chart.html', context )
 
-    for a in handicap_history:
-        key_val = (a.event.date_of_event, a.handicap)
-        data_values.append(key_val)
+class ChartData(APIView):
+    # Rest API class for return Handicap Charting Data
+    authentication_classes = []
+    permission_classes = []
 
-    context = {'values': data_values}
-    return render(request, 'results/chart.html', context)
+    def get(self, request, pk, format=None,):
+        # pick up the Primary Key from the URL for use as the API Endpoint
+        pk = self.kwargs.get("pk")
+        player = get_object_or_404(Player,id=pk)
+        handicap_history = Result.objects.filter(player_id=pk).order_by('event__date_of_event')
+
+        data_scale = []
+        data_values = []
+
+        for a in handicap_history:
+            data_scale.append(a.event.date_of_event)
+            data_values.append(a.handicap)
+
+        data = {
+            "labels" : data_scale,
+            "default" : data_values,
+        }
+
+        return Response(data)

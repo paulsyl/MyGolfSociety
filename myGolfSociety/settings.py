@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'results',
     'crispy_forms',
     'googlecharts',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

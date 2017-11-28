@@ -1,32 +1,83 @@
 {% extends 'base.html' %}
+
+<script>
+{% block jquery %}
+var paul = {{ id }};
+console.log(paul)
+// Use Jquery to call the API Endpoint
+var endpoint = '/results/api/chart/data/{{ id }}'
+// Assign the API data
+var defaultData =[]
+var labels = []
+
+$.ajax({
+	method: "GET",
+	url: endpoint,
+	success: function(data){
+		// data is the response from the view
+		labels = data.labels
+		defaultData = data.default
+		setChart()
+		//console.log(data)
+	},
+	error: function(error_data){
+		console.log("error")
+		console.log(error_data)
+	}
+})
+
+function setChart() {
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: [{
+				label: 'Handicap',
+				data: defaultData,
+	            backgroundColor: [
+	                'rgba(255, 99, 132, 0.2)',
+	                'rgba(54, 162, 235, 0.2)',
+	                'rgba(255, 206, 86, 0.2)',
+	                'rgba(75, 192, 192, 0.2)',
+	                'rgba(153, 102, 255, 0.2)',
+	                'rgba(255, 159, 64, 0.2)'
+	            ],
+	            borderColor: [
+	                'rgba(255,99,132,1)',
+	                'rgba(54, 162, 235, 1)',
+	                'rgba(255, 206, 86, 1)',
+	                'rgba(75, 192, 192, 1)',
+	                'rgba(153, 102, 255, 1)',
+	                'rgba(255, 159, 64, 1)'
+	            ],
+	            borderWidth: 1
+	        }]
+	    },
+	    options: {
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero:true
+	                }
+	            }]
+	        }
+	    }
+	});
+}
+// Code for Rendering the Chart
+	// var ctx = document.getElementById("myChart").getContext('2d');
+
+
+{% endblock jquery %}
+</script>
+
 {% block content %}
 
-{% load googlecharts %}
-{# container #}
-
-<div id="out" class="container"></div>
-{% googlecharts %}
-	{# named data and options can be reused #}
-	{% data values "out_data" %}
-		{% col "string" "Date" %}"{{ val }}"{% endcol %}
-		{% col "number" "Handicap" %}{{ val }}{% endcol %}
-	{% enddata %}
-	{# you can also use global javascript variables here, #}
-	{# and call functions #}
-	{% options "out_options" %}
-		kind: "LineChart",
-		options: {
-
-			title: "Handicap Tracker",
-			legend: "none",
-			vAxis: { title: "Playing Handicap" },
-			hAxis: {  viewWindowMode: "pretty"},
-		},
-	{% endoptions %}
-	{# chart is assembled from container, data and options #}
-	{% graph "out" "out_data" "out_options" %}
-
-
-{% endgooglecharts %}
-
+<div>
+	<h1> Charts Test Page </h1>
+	<div class='col-sm-6'>
+	<canvas id="myChart" width="400" height="400"></canvas>
+</div>
+</div>
 {% endblock %}
