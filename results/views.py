@@ -149,34 +149,41 @@ def get_player_history(request,pk):
     return render(request, 'results/getplayerhistory.html', context)
 
 def chart(request,pk):
-    # Take the PK, output to the Charting Template and use as the API Endpoint
-    context = {
-        "id" : pk,
-    }
-
+    # Take the PK, output to the Charting Template and use as the PK
+    # for the the API Endpoint when retieving charts
+    context = {"id" : pk,}
     return render(request, 'results/chart.html', context )
 
 class ChartData(APIView):
-    # Rest API class for return Handicap Charting Data
+    # Rest API class for returning Charting Data
     authentication_classes = []
     permission_classes = []
 
     def get(self, request, pk, format=None,):
+        data_handicap_date = []
+        data_handicap_values = []
+        data_performance = []
+
         # pick up the Primary Key from the URL for use as the API Endpoint
         pk = self.kwargs.get("pk")
-        player = get_object_or_404(Player,id=pk)
         handicap_history = Result.objects.filter(player_id=pk).order_by('event__date_of_event')
 
-        data_scale = []
-        data_values = []
+        for hc_hist in handicap_history:
+            data_handicap_date.append(hc_hist.event.date_of_event)
+            data_handicap_values.append(hc_hist.handicap)
 
-        for a in handicap_history:
-            data_scale.append(a.event.date_of_event)
-            data_values.append(a.handicap)
+        # Retrieve Values for Event Performance, apend them the API endpoint
+        data_performance.append(Result.objects.filter(player_id=pk).count())
+        data_performance.append(Result.objects.filter(player_id=pk,event_rank=1).count())
+        data_performance.append(Result.objects.filter(player_id=pk,event_rank=2).count())
+        data_performance.append(Result.objects.filter(player_id=pk,event_rank=3).count())
 
+        # Data for the charts
         data = {
-            "labels" : data_scale,
-            "default" : data_values,
+            "handicap_date" : data_handicap_date,
+            "handicap_values" : data_handicap_values,
+            "performance_labels" : ['Total Events Played','1st Place','2nd Place','3rd Place'],
+            "performance_data" : data_performance
         }
 
         return Response(data)

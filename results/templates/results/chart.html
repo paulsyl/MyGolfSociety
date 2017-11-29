@@ -15,8 +15,10 @@ $.ajax({
 	url: endpoint,
 	success: function(data){
 		// data is the response from the view
-		labels = data.labels
-		defaultData = data.default
+		//labels = data.labels
+		//defaultData = data.default
+		labels = data.performance_labels
+		defaultData = data.performance_data
 		setChart()
 		//console.log(data)
 	},
@@ -28,42 +30,24 @@ $.ajax({
 
 function setChart() {
 	var ctx = document.getElementById("myChart").getContext('2d');
+	console.log(defaultData)
 	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: labels,
-			datasets: [{
-				label: 'Handicap',
-				data: defaultData,
-	            backgroundColor: [
-	                'rgba(255, 99, 132, 0.2)',
-	                'rgba(54, 162, 235, 0.2)',
-	                'rgba(255, 206, 86, 0.2)',
-	                'rgba(75, 192, 192, 0.2)',
-	                'rgba(153, 102, 255, 0.2)',
-	                'rgba(255, 159, 64, 0.2)'
-	            ],
-	            borderColor: [
-	                'rgba(255,99,132,1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero:true
-	                }
-	            }]
-	        }
-	    }
-	});
+    type: 'doughnut',
+    data: data = {
+		    datasets: [{
+		        data: defaultData,
+				backgroundColor:[
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(255, 206, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)'
+				]
+		    }],
+    		// These labels appear in the legend and in the tooltips when hovering different arcs
+	    	labels: labels
+	}
+    //options: options
+});
 }
 // Code for Rendering the Chart
 	// var ctx = document.getElementById("myChart").getContext('2d');
@@ -77,7 +61,7 @@ function setChart() {
 <div>
 	<h1> Charts Test Page </h1>
 	<div class='col-sm-6'>
-	<canvas id="myChart" width="400" height="400"></canvas>
-</div>
+		<canvas id="myChart" width="400" height="400"></canvas>
+	</div>
 </div>
 {% endblock %}

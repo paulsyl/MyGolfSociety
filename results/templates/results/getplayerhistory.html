@@ -3,12 +3,16 @@
 
 <h1> Player History: {{ player.first_name}} {{ player.last_name}}</br> </h1>
 <br/>
-
+<div class="col-sm-6">
 <h4> Total Rounds Played {{ rds_played }} </h4>
+</div>
+<div class="col-sm-6">
 <h4> Average Points Total {{ avg_score.total_score__avg|floatformat }} </h4>
+</div>
 </br>
-
+</br>
 <script>
+
 {% block jquery %}
 // Use Jquery to call the API Endpoint
 var endpoint = '/results/api/chart/data/{{ id }}'
@@ -20,9 +24,12 @@ $.ajax({
 	method: "GET",
 	url: endpoint,
 	success: function(data){
-		// data is the response from the view
-		labels = data.labels
-		defaultData = data.default
+		// Retrieve the data items from the Api endpoint
+		handicap_date = data.handicap_date
+		handicap_values = data.handicap_values
+        performance_labels = data.performance_labels
+		performance_data = data.performance_data
+        console.log(performance_data)
 		setChart()
 		//console.log(data)
 	},
@@ -32,30 +39,24 @@ $.ajax({
 	}
 })
 
+
 function setChart() {
 	var ctx = document.getElementById("myChart").getContext('2d');
+    var ctx2 = document.getElementById("myChart2");
+
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
-			labels: labels,
+			labels: handicap_date,
 			datasets: [{
 				label: 'Handicap',
-				data: defaultData,
+				data: handicap_values,
+                fill: true,
 	            backgroundColor: [
-	                'rgba(255, 99, 132, 0.2)',
-	                'rgba(54, 162, 235, 0.2)',
-	                'rgba(255, 206, 86, 0.2)',
-	                'rgba(75, 192, 192, 0.2)',
-	                'rgba(153, 102, 255, 0.2)',
-	                'rgba(255, 159, 64, 0.2)'
+	                'rgba(255, 99, 132, 0.2)'
 	            ],
 	            borderColor: [
-	                'rgba(255,99,132,1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
+	                'rgba(255,99,132,1)'
 	            ],
 	            borderWidth: 1
 	        }]
@@ -73,14 +74,37 @@ function setChart() {
 	        }
 	    }
 	});
+
+    var myChart2 = new Chart(ctx2, {
+    type: 'doughnut',
+    data: data = {
+            datasets: [{
+                data: performance_data,
+                backgroundColor:[
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ]
+            }],
+            // These labels appear in the legend and in the tooltips when hovering different arcs
+            labels: performance_labels
+        }
+        //options: options
+    });
 }
 
 {% endblock jquery %}
 </script>
 
-<div class='col-sm-12'>
-<canvas id="myChart" width="700" height="200"></canvas>
-<br>
+<div class='col-sm-6'>
+    <canvas id="myChart" width="200" height="200"></canvas>
+    <br>
+</div>
+
+ <div class='col-sm-6'>
+    <canvas id="myChart2" width="200" height="200"></canvas>
+    <br>
 </div>
 
 <br>
