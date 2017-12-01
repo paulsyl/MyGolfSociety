@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('useraccounts.urls')),   # redirected URL request for any of the UA urls
     url(r'^results/', include('results.urls')),
+    url(r'^society_admin/', include('society_admin.urls')),
 ]

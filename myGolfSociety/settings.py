@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'useraccounts',
     'results',
+    'society_admin',
     'crispy_forms',
     'googlecharts',
     'rest_framework',

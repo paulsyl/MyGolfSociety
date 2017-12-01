@@ -46,8 +46,8 @@
                 {% if user.is_authenticated %}
                 <div >
                     <ul class="nav navbar-nav navbar-centre" >
-                        <li><a href="{% url 'results:create_player' %}" >Create Player</a></li>
-                        <li><a href="{% url 'results:create_event' %}" >Create Event</a></li>
+                        <li><a href="{% url 'society_admin:create_player' %}" >Create Player</a></li>
+                        <li><a href="{% url 'society_admin:create_event' %}" >Create Event</a></li>
                         <li><a href="{% url 'results:events' %}" >Event History</a></li>
                         <li><a href="{% url 'results:members' %}" >Members</a></li>
                     </ul>
@@ -65,12 +65,12 @@
                         {% csrf_token %}
                         <input type="hidden" />
                     </form>
-                    <form id="create_event" method="POST" action="{% url 'results:create_event' %}">
+                    <form id="create_event" method="POST" action="{% url 'society_admin:create_event' %}">
                         {% csrf_token %}
                         <input type="hidden" />
                     </form>
 
-                   <form id="create_player" method="POST" action="{% url 'results:create_player' %}">
+                   <form id="create_player" method="POST" action="{% url 'society_admin:create_player' %}">
                         {% csrf_token %}
                         <input type="hidden" />
                     </form>
