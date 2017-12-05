@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 #Authentication libraries
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from results.models import Event, Player
 
 def signup(request):
     if request.method == 'POST':
@@ -37,26 +36,20 @@ def signup(request):
         return render(request, 'useraccounts/signup.html')
 
 def home(request):
-    return render(request, 'useraccounts/home.html')
+        return render(request, 'useraccounts/home.html')
 
 def userlogin(request):
     if request.method == 'POST':
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
         if user is not None:
             login(request, user)
-            # get the events list to prepopulate the dashboard
-            events = Event.objects.order_by('-date_of_event')
-            members = Player.objects.order_by('date_joined')
-            context = {
-                "events" : events,
-                "members" : members
-            }
+            print("logged in")
             """ if the user arrived here via the redirect from the authentication, then following the login,
              send the user back to their original page, first check to see if name of the rediect is contained
              within the POST request"""
             if 'next' in request.POST:
                 return redirect(request.POST['next'])
-            return render(request, 'results/dashboard.html', context)
+            return render(request, 'results/dashboard.html')
         else:
             print("Invalid Login")
             return render(request, 'useraccounts/home.html', {'error': 'The username and password not found'})
